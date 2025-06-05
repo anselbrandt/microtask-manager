@@ -64,10 +64,10 @@ mongoose
   })
   .catch((err) => console.error("MongoDB connection error:", err));
 
-app.use(express.static(path.join(process.cwd(), "src/dist")));
+app.use(express.static(path.join(process.cwd(), "../dist")));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(process.cwd(), "src/dist/index.html"));
+  res.sendFile(path.join(process.cwd(), "../dist/index.html"));
 });
 
 app.post("/api/login", (req, res) => {

@@ -16,4 +16,7 @@ export default defineConfig({
     port: 3000,
     allowedHosts: ["air.anselbrandt.net"],
   },
+  build: {
+    outDir: "../dist", // <-- output to root /dist folder
+  },
 });
