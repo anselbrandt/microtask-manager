@@ -15,7 +15,6 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -29,13 +28,13 @@ app.use(
 app.use(express.json());
 
 const redisClient = createClient();
-
 redisClient.on("error", (err) => console.error("Redis Client Error", err));
-
 await redisClient.connect();
 
 const taskSchema = new mongoose.Schema({
   title: { type: String, required: true },
+  description: { type: String, default: "" },
+  username: { type: String, required: true },
   status: {
     type: String,
     enum: ["Open", "Completed"],
@@ -67,7 +66,6 @@ app.post("/login", (req, res) => {
   }
 
   const payload = { username };
-
   const mockJwt = JSON.stringify(payload);
 
   res.type("text/plain").send(mockJwt);
@@ -75,11 +73,32 @@ app.post("/login", (req, res) => {
 
 app.post("/tasks", async (req, res) => {
   try {
-    const { title } = req.body;
-    if (!title)
-      return res.status(400).json({ error: "Task title is required" });
+    const authHeader = req.headers.authorization;
 
-    const newTask = new Task({ title, status: "Open" });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Missing or invalid token" });
+    }
+
+    const token = authHeader.slice(7);
+    let payload;
+
+    try {
+      payload = JSON.parse(token);
+    } catch {
+      return res.status(400).json({ error: "Invalid token format" });
+    }
+
+    const { username } = payload;
+    if (!username) {
+      return res.status(400).json({ error: "Username not found in token" });
+    }
+
+    const { title, description = "" } = req.body;
+    if (!title) {
+      return res.status(400).json({ error: "Task title is required" });
+    }
+
+    const newTask = new Task({ title, description, username, status: "Open" });
     await newTask.save();
 
     await redisClient.del("tasks_cache");
@@ -100,7 +119,6 @@ app.get("/tasks", async (req, res) => {
     }
 
     const tasks = await Task.find();
-
     await redisClient.setEx("tasks_cache", 30, JSON.stringify(tasks));
 
     res.json(tasks);
