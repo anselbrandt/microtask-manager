@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { createClient } from "redis";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
 
 dotenv.config();
 
@@ -63,7 +64,13 @@ mongoose
   })
   .catch((err) => console.error("MongoDB connection error:", err));
 
-app.post("/login", (req, res) => {
+app.use(express.static(path.join(process.cwd(), "src/dist")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(process.cwd(), "src/dist/index.html"));
+});
+
+app.post("/api/login", (req, res) => {
   const { username } = req.body;
   if (!username) {
     return res.status(400).json({ error: "Username is required" });
@@ -75,7 +82,7 @@ app.post("/login", (req, res) => {
   res.type("text/plain").send(mockJwt);
 });
 
-app.post("/tasks", async (req, res) => {
+app.post("/api/tasks", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -113,7 +120,7 @@ app.post("/tasks", async (req, res) => {
   }
 });
 
-app.get("/tasks", async (req, res) => {
+app.get("/api/tasks", async (req, res) => {
   try {
     const cachedTasks = await redisClient.get("tasks_cache");
 
@@ -131,7 +138,7 @@ app.get("/tasks", async (req, res) => {
   }
 });
 
-app.put("/tasks/:id", async (req, res) => {
+app.put("/api/tasks/:id", async (req, res) => {
   try {
     const updatedTask = await Task.findByIdAndUpdate(
       req.params.id,
