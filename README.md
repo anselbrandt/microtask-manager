@@ -56,7 +56,7 @@ pm2 save
 
 ### Future deployment:
 
-1. Dockerfile builds
+1. Dockerfile
 
 2. Docker Compose file running MongoDB, Redis and the Express Backend App
 
