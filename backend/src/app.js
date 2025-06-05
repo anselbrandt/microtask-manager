@@ -12,7 +12,6 @@ const port = process.env.PORT || 3001;
 const allowedOrigins = [
   "http://localhost:3000",
   "https://air.anselbrandt.net",
-  "https://air.anselbrandt.net",
   "https://microtask-manager.vercel.app",
 ];
 
