@@ -37,6 +37,41 @@
         <strong>Mock JWT:</strong>
         <pre>{{ jwt }}</pre>
       </div>
+
+      <div v-if="jwt" class="box mt-5">
+        <h2 class="subtitle">Add a Task</h2>
+
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input
+              class="input"
+              type="text"
+              placeholder="Enter task title"
+              v-model="newTask"
+              @keyup.enter="addTask"
+            />
+          </div>
+          <div class="control">
+            <button
+              class="button is-success"
+              @click="addTask"
+              :disabled="addingTask || !newTask"
+            >
+              <span v-if="addingTask" class="loader"></span>
+              <span v-else>Add Task</span>
+            </button>
+          </div>
+        </div>
+
+        <div v-if="taskError" class="notification is-danger mt-3">
+          {{ taskError }}
+        </div>
+
+        <div v-if="createdTask" class="notification is-success mt-3">
+          Task "<strong>{{ createdTask.title }}</strong
+          >" added!
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -48,6 +83,11 @@ const username = ref("");
 const jwt = ref("");
 const error = ref("");
 const loading = ref(false);
+
+const newTask = ref("");
+const addingTask = ref(false);
+const taskError = ref("");
+const createdTask = ref(null);
 
 const API_SERVER_URL =
   import.meta.env.VITE_API_SERVER_URL || "http://localhost:3001";
@@ -82,6 +122,40 @@ async function login() {
     error.value = "Network error";
   } finally {
     loading.value = false;
+  }
+}
+
+async function addTask() {
+  taskError.value = "";
+  createdTask.value = null;
+
+  if (!newTask.value) return;
+
+  addingTask.value = true;
+
+  try {
+    const res = await fetch(`${API_SERVER_URL}/tasks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt.value}`,
+      },
+      body: JSON.stringify({ title: newTask.value }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      taskError.value = data.error || "Failed to add task";
+      return;
+    }
+
+    createdTask.value = data;
+    newTask.value = "";
+  } catch (err) {
+    taskError.value = "Network error";
+  } finally {
+    addingTask.value = false;
   }
 }
 </script>
