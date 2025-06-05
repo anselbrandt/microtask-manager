@@ -6,6 +6,8 @@
 
 ## Install and Run
 
+### ** This project requires MongoDB and Redis to be available on your system configured to default ports **
+
 ### Frontend
 
 ```
