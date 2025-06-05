@@ -1,14 +1,9 @@
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title">
-        Login
-      </h1>
+      <h1 class="title">Login</h1>
 
-      <div
-        v-if="!jwt"
-        class="field"
-      >
+      <div v-if="!jwt" class="field">
         <label class="label">Username</label>
         <div class="control">
           <input
@@ -17,7 +12,7 @@
             type="text"
             placeholder="Enter username"
             @keyup.enter="login"
-          >
+          />
         </div>
       </div>
 
@@ -29,37 +24,23 @@
             :disabled="loading || (!jwt && !username)"
             @click="jwt ? logout() : login()"
           >
-            <span
-              v-if="loading"
-              class="loader"
-            />
+            <span v-if="loading" class="loader" />
             <span v-else>{{ jwt ? "Logout" : "Login" }}</span>
           </button>
         </div>
       </div>
 
-      <div
-        v-if="error"
-        class="notification is-danger"
-      >
+      <div v-if="error" class="notification is-danger">
         {{ error }}
       </div>
 
-      <div
-        v-if="jwt"
-        class="notification is-info"
-      >
+      <div v-if="jwt" class="notification is-info">
         <strong>Mock JWT:</strong>
         <pre>{{ jwt }}</pre>
       </div>
 
-      <div
-        v-if="jwt"
-        class="box mt-5"
-      >
-        <h2 class="subtitle">
-          Add a Task
-        </h2>
+      <div v-if="jwt" class="box mt-5">
+        <h2 class="subtitle">Add a Task</h2>
 
         <div class="field">
           <div class="control">
@@ -68,7 +49,7 @@
               class="input"
               type="text"
               placeholder="Enter task title"
-            >
+            />
           </div>
         </div>
 
@@ -79,7 +60,7 @@
               class="input"
               type="text"
               placeholder="Enter task description"
-            >
+            />
           </div>
         </div>
 
@@ -90,54 +71,39 @@
               :disabled="addingTask || !newTask"
               @click="addTask"
             >
-              <span
-                v-if="addingTask"
-                class="loader"
-              />
+              <span v-if="addingTask" class="loader" />
               <span v-else>Add Task</span>
             </button>
           </div>
         </div>
 
-        <div
-          v-if="taskError"
-          class="notification is-danger mt-3"
-        >
+        <div v-if="taskError" class="notification is-danger mt-3">
           {{ taskError }}
         </div>
 
-        <div
-          v-if="createdTask"
-          class="notification is-success mt-3"
-        >
-          Task "<strong>{{ createdTask.title }}</strong>" added!
+        <div v-if="createdTask" class="notification is-success mt-3">
+          Task "<strong>{{ createdTask.title }}</strong
+          >" added!
         </div>
       </div>
 
-      <div
-        v-if="tasks.length"
-        class="box mt-5"
-      >
-        <h2 class="subtitle">
-          All Tasks
-        </h2>
+      <div v-if="tasks.length" class="box mt-5">
+        <h2 class="subtitle">All Tasks</h2>
         <ul>
-          <li
-            v-for="task in tasks"
-            :key="task._id"
-            class="task-item"
-          >
+          <li v-for="task in tasks" :key="task._id" class="task-item">
             <strong>{{ task.title }}</strong> — {{ task.description }}
-            <br>
-            <small>Created by: <strong>{{ task.username }}</strong></small>
+            <br />
+            <small
+              >Created by: <strong>{{ task.username }}</strong></small
+            >
             <span
               :class="[
                 'status-badge',
                 task.status === 'Open'
                   ? 'todo'
                   : task.status === 'Completed'
-                    ? 'done'
-                    : '',
+                  ? 'done'
+                  : '',
               ]"
             >
               {{ task.status }}
@@ -149,10 +115,7 @@
               :disabled="updatingTaskId === task._id"
               @click="markCompleted(task._id)"
             >
-              <span
-                v-if="updatingTaskId === task._id"
-                class="loader"
-              />
+              <span v-if="updatingTaskId === task._id" class="loader" />
               <span v-else>Mark Completed</span>
             </button>
           </li>
@@ -180,7 +143,7 @@ const tasks = ref([]);
 const updatingTaskId = ref(null);
 
 const API_SERVER_URL =
-  import.meta.env.VITE_API_SERVER_URL || "http://localhost:3001";
+  import.meta.env.VITE_API_SERVER_URL || "http://localhost:3000";
 
 async function login() {
   error.value = "";
