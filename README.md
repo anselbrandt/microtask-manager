@@ -42,6 +42,18 @@ Backend server port can be configured in `backend/.env`:
 PORT=3000
 ```
 
+### Run as Background Task
+
+```
+npm install -g pm2
+
+cd backend
+
+pm2 start src/app.js --name microtask-manager
+
+pm2 save
+```
+
 ### Future deployment:
 
 1. Dockerfile builds
