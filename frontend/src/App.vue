@@ -143,7 +143,7 @@ const tasks = ref([]);
 const updatingTaskId = ref(null);
 
 const API_SERVER_URL =
-  import.meta.env.VITE_API_SERVER_URL || "http://localhost:3000";
+  import.meta.env.VITE_API_SERVER_URL || "http://localhost:3000/api";
 
 async function login() {
   error.value = "";
