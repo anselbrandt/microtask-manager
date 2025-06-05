@@ -1,18 +1,23 @@
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title">Login</h1>
+      <h1 class="title">
+        Login
+      </h1>
 
-      <div v-if="!jwt" class="field">
+      <div
+        v-if="!jwt"
+        class="field"
+      >
         <label class="label">Username</label>
         <div class="control">
           <input
+            v-model="username"
             class="input"
             type="text"
             placeholder="Enter username"
-            v-model="username"
             @keyup.enter="login"
-          />
+          >
         </div>
       </div>
 
@@ -21,46 +26,60 @@
           <button
             class="button"
             :class="jwt ? 'is-danger' : 'is-primary'"
-            @click="jwt ? logout() : login()"
             :disabled="loading || (!jwt && !username)"
+            @click="jwt ? logout() : login()"
           >
-            <span v-if="loading" class="loader"></span>
+            <span
+              v-if="loading"
+              class="loader"
+            />
             <span v-else>{{ jwt ? "Logout" : "Login" }}</span>
           </button>
         </div>
       </div>
 
-      <div v-if="error" class="notification is-danger">
+      <div
+        v-if="error"
+        class="notification is-danger"
+      >
         {{ error }}
       </div>
 
-      <div v-if="jwt" class="notification is-info">
+      <div
+        v-if="jwt"
+        class="notification is-info"
+      >
         <strong>Mock JWT:</strong>
         <pre>{{ jwt }}</pre>
       </div>
 
-      <div v-if="jwt" class="box mt-5">
-        <h2 class="subtitle">Add a Task</h2>
+      <div
+        v-if="jwt"
+        class="box mt-5"
+      >
+        <h2 class="subtitle">
+          Add a Task
+        </h2>
 
         <div class="field">
           <div class="control">
             <input
+              v-model="newTask"
               class="input"
               type="text"
               placeholder="Enter task title"
-              v-model="newTask"
-            />
+            >
           </div>
         </div>
 
         <div class="field mt-3">
           <div class="control">
             <input
+              v-model="newDescription"
               class="input"
               type="text"
               placeholder="Enter task description"
-              v-model="newDescription"
-            />
+            >
           </div>
         </div>
 
@@ -68,42 +87,57 @@
           <div class="control">
             <button
               class="button is-success"
-              @click="addTask"
               :disabled="addingTask || !newTask"
+              @click="addTask"
             >
-              <span v-if="addingTask" class="loader"></span>
+              <span
+                v-if="addingTask"
+                class="loader"
+              />
               <span v-else>Add Task</span>
             </button>
           </div>
         </div>
 
-        <div v-if="taskError" class="notification is-danger mt-3">
+        <div
+          v-if="taskError"
+          class="notification is-danger mt-3"
+        >
           {{ taskError }}
         </div>
 
-        <div v-if="createdTask" class="notification is-success mt-3">
-          Task "<strong>{{ createdTask.title }}</strong
-          >" added!
+        <div
+          v-if="createdTask"
+          class="notification is-success mt-3"
+        >
+          Task "<strong>{{ createdTask.title }}</strong>" added!
         </div>
       </div>
 
-      <div v-if="tasks.length" class="box mt-5">
-        <h2 class="subtitle">All Tasks</h2>
+      <div
+        v-if="tasks.length"
+        class="box mt-5"
+      >
+        <h2 class="subtitle">
+          All Tasks
+        </h2>
         <ul>
-          <li v-for="task in tasks" :key="task._id" class="task-item">
+          <li
+            v-for="task in tasks"
+            :key="task._id"
+            class="task-item"
+          >
             <strong>{{ task.title }}</strong> — {{ task.description }}
-            <br />
-            <small
-              >Created by: <strong>{{ task.username }}</strong></small
-            >
+            <br>
+            <small>Created by: <strong>{{ task.username }}</strong></small>
             <span
               :class="[
                 'status-badge',
                 task.status === 'Open'
                   ? 'todo'
                   : task.status === 'Completed'
-                  ? 'done'
-                  : '',
+                    ? 'done'
+                    : '',
               ]"
             >
               {{ task.status }}
@@ -112,10 +146,13 @@
             <button
               v-if="task.status === 'Open'"
               class="button is-small is-success ml-3"
-              @click="markCompleted(task._id)"
               :disabled="updatingTaskId === task._id"
+              @click="markCompleted(task._id)"
             >
-              <span v-if="updatingTaskId === task._id" class="loader"></span>
+              <span
+                v-if="updatingTaskId === task._id"
+                class="loader"
+              />
               <span v-else>Mark Completed</span>
             </button>
           </li>
