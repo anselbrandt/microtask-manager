@@ -109,7 +109,6 @@
               {{ task.status }}
             </span>
 
-            <!-- Mark Completed button for tasks with status "Open" -->
             <button
               v-if="task.status === 'Open'"
               class="button is-small is-success ml-3"
